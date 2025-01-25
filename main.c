@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Structure pour une commande
 typedef struct Commande
 {
     int id;
@@ -72,4 +71,41 @@ void annulerCommande(FileCommande* file)
     printf("Commande ID %d annulee avec succes.\n", commandeAnnulee->id);
     free(commandeAnnulee);
     file->taille--;
+}
+Commande* rechercherCommande(FileCommande* file, int id)
+{
+    Commande* courant = file->tete;
+
+    while (courant != NULL)
+    {
+        if (courant->id == id)
+        {
+            return courant; 
+        }
+
+        courant = courant->suivant;
+    }
+
+    return NULL; 
+}
+
+void afficherHistorique(FileCommande* file)
+{
+    if (file->tete == NULL)
+    {
+        printf("Aucune commande a afficher.\n");
+        return;
+    }
+
+    Commande* courant = file->tete;
+
+    printf("Historique des commandes :\n");
+
+    while (courant != NULL)
+    {
+        printf("ID: %d | Client: %s | Description: %s | Statut: %s | Date: %s\n",
+        courant->id, courant->client, courant->description, courant->statut, courant->date);
+
+        courant = courant->suivant;
+    }
 }
