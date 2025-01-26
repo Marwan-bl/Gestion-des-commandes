@@ -109,3 +109,26 @@ void afficherHistorique(FileCommande* file)
         courant = courant->suivant;
     }
 }
+void afficherCommandesEnAttente(FileCommande* file)
+{
+    if (file->tete == NULL)
+    {
+        printf("Aucune commande en attente.\n");
+        return;
+    }
+
+    Commande* courant = file->tete;
+
+    printf("Commandes en attente :\n");
+
+    while (courant != NULL)
+    {
+        if (strcmp(courant->statut, "En attente") == 0)
+        {
+            printf("ID: %d | Client: %s | Description: %s | Date: %s\n",
+            courant->id, courant->client, courant->description, courant->date);
+        }
+
+        courant = courant->suivant;
+    }
+}
