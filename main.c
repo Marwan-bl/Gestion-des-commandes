@@ -169,7 +169,7 @@ int main()
                 scanf(" %[^\n]", client);
                 printf("Description : ");
                 scanf(" %[^\n]", description);
-                printf("Statut (ex. En attente) : ");
+                printf("Statut (En attente, Livree, Annulee) : ");
                 scanf(" %[^\n]", statut);
                 printf("Date : ");
                 scanf(" %[^\n]", date);
