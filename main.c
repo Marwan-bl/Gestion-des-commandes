@@ -206,6 +206,9 @@ int main()
             case 5:
                 afficherCommandesEnAttente(&file);
                 break;
+             case 6 :
+                printf("Thank you, Goodbye! \n");
+                break;
             default:
                 printf("Choix invalide. Reessayez.\n");
         }
