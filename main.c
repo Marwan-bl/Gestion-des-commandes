@@ -52,7 +52,7 @@ void ajouterCommande(FileCommande* file, int id, const char* client, const char*
     printf("Commande ajoutee avec succes !\n");
 }
 
-void annulerCommande(FileCommande* file)
+void annulerCommande(FileCommande* file, int id)
 {
     if (file->tete == NULL)
     {
@@ -60,18 +60,44 @@ void annulerCommande(FileCommande* file)
         return;
     }
 
-    Commande* commandeAnnulee = file->tete;
-    file->tete = file->tete->suivant;
+    Commande* courant = file->tete;
+    Commande* precedent = NULL;
 
-    if (file->tete == NULL)  // Si la file est maintenant vide
+    // Recherche de la commande par ID
+    while (courant != NULL && courant->id != id)
     {
-        file->queue = NULL;
+        precedent = courant;
+        courant = courant->suivant;
     }
 
-    printf("Commande ID %d annulee avec succes.\n", commandeAnnulee->id);
-    free(commandeAnnulee);
+    // Si la commande n'existe pas
+    if (courant == NULL)
+    {
+        printf("Commande avec ID %d non trouvee.\n", id);
+        return;
+    }
+
+    // Suppression de la commande trouvée
+    if (precedent == NULL)
+    {   // Suppression en tête
+        file->tete = courant->suivant;
+    }
+    else
+    {
+        precedent->suivant = courant->suivant;
+    }
+
+    // Si on supprime la dernière commande
+    if (courant == file->queue)
+    {
+        file->queue = precedent;
+    }
+
+    free(courant);
     file->taille--;
+    printf("Commande ID %d annulee avec succes.\n", id);
 }
+
 Commande* rechercherCommande(FileCommande* file, int id)
 {
     Commande* courant = file->tete;
@@ -109,6 +135,7 @@ void afficherHistorique(FileCommande* file)
         courant = courant->suivant;
     }
 }
+
 void afficherCommandesEnAttente(FileCommande* file)
 {
     if (file->tete == NULL)
@@ -132,7 +159,6 @@ void afficherCommandesEnAttente(FileCommande* file)
         courant = courant->suivant;
     }
 }
-
 
 void DisplayMenu()
 {
@@ -165,19 +191,44 @@ int main()
             case 1:
                 printf("Entrez l'ID de la commande : ");
                 scanf("%d", &id);
+
                 printf("Nom du client : ");
                 scanf(" %[^\n]", client);
+
                 printf("Description : ");
                 scanf(" %[^\n]", description);
-                printf("Statut (En attente, Livree, Annulee) : ");
-                scanf(" %[^\n]", statut);
+
+                printf("Statut (1: En attente, 2: Livree, 3: Retournee) : ");
+                int statutChoix;
+                scanf("%d", &statutChoix);
+
+                switch (statutChoix)
+                {
+                    case 1:
+                        strcpy(statut, "En attente");
+                        break;
+                    case 2:
+                        strcpy(statut, "Livree");
+                        break;
+                    case 3:
+                        strcpy(statut, "Retournee");
+                        break;
+                    default:
+                        printf("Statut invalide, par defaut 'En attente'.\n");
+                        strcpy(statut, "En attente");
+                        break;
+                }
+
                 printf("Date : ");
                 scanf(" %[^\n]", date);
+
                 ajouterCommande(&file, id, client, description, statut, date);
                 break;
 
             case 2:
-                annulerCommande(&file);
+                printf("Entrez l'ID de la commande a annulee: ");
+                scanf("%d", &id);
+                annulerCommande(&file,id);
                 break;
 
             case 3:
